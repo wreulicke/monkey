@@ -3,9 +3,9 @@ package parser
 import (
 	"fmt"
 
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/ast"
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/lexer"
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/token"
+	"github.com/wreulicke/monkey/ast"
+	"github.com/wreulicke/monkey/lexer"
+	"github.com/wreulicke/monkey/token"
 )
 
 type Precedence int

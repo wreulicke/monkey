@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/ast"
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/lexer"
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/token"
+	"github.com/wreulicke/monkey/ast"
+	"github.com/wreulicke/monkey/lexer"
+	"github.com/wreulicke/monkey/token"
 )
 
 func TestParsingFunctionLiteralWithArrayPattern(t *testing.T) {

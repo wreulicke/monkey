@@ -3,9 +3,9 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
-	interpreterRepl "github.com/wreulicke/go-sandbox/go-interpreter/monkey/interpreter/repl"
-	lexerRepl "github.com/wreulicke/go-sandbox/go-interpreter/monkey/lexer/repl"
-	parserRepl "github.com/wreulicke/go-sandbox/go-interpreter/monkey/parser/repl"
+	interpreterRepl "github.com/wreulicke/monkey/interpreter/repl"
+	lexerRepl "github.com/wreulicke/monkey/lexer/repl"
+	parserRepl "github.com/wreulicke/monkey/parser/repl"
 )
 
 func New() *cobra.Command {

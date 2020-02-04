@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/cli"
+	"github.com/wreulicke/monkey/cli"
 )
 
 func main() {

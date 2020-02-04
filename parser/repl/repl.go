@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/c-bata/go-prompt"
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/lexer"
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/parser"
+	"github.com/wreulicke/monkey/lexer"
+	"github.com/wreulicke/monkey/parser"
 )
 
 func Start() {

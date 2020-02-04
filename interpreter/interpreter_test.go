@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/lexer"
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/object"
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/parser"
+	"github.com/wreulicke/monkey/lexer"
+	"github.com/wreulicke/monkey/object"
+	"github.com/wreulicke/monkey/parser"
 )
 
 func TestPipelineOperatorExpressions(t *testing.T) {

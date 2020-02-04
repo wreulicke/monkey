@@ -1,6 +1,6 @@
 package interpreter
 
-import "github.com/wreulicke/go-sandbox/go-interpreter/monkey/object"
+import "github.com/wreulicke/monkey/object"
 
 import "fmt"
 

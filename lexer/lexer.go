@@ -8,7 +8,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	token "github.com/wreulicke/go-sandbox/go-interpreter/monkey/token"
+	token "github.com/wreulicke/monkey/token"
 )
 
 const eof = -1

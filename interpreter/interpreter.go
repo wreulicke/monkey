@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/ast"
-	"github.com/wreulicke/go-sandbox/go-interpreter/monkey/object"
+	"github.com/wreulicke/monkey/ast"
+	"github.com/wreulicke/monkey/object"
 )
 
 var (

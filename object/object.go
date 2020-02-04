@@ -2,7 +2,7 @@ package object
 
 import "fmt"
 
-import "github.com/wreulicke/go-sandbox/go-interpreter/monkey/ast"
+import "github.com/wreulicke/monkey/ast"
 
 import "bytes"
 
