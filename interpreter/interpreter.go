@@ -169,7 +169,6 @@ func extendFunctionEnv(function *object.Function, args []object.Object) *object.
 	env := function.Env.NewEnclosedEnvironment()
 
 	for paramIdx, param := range function.Parameters {
-		fmt.Printf("%T %s\n", param, param.String())
 		bindPattern(env, param, args[paramIdx])
 	}
 	return env
