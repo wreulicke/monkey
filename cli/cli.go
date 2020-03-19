@@ -13,10 +13,20 @@ func New() *cobra.Command {
 		Use:   "monkey",
 		Short: "monkey interpreter",
 		Run: func(cmd *cobra.Command, args []string) {
+		},
+	}
+	c.AddCommand(NewInterpreterCommand(), NewLexerCommand(), NewParserCommand())
+	return c
+}
+
+func NewInterpreterCommand() *cobra.Command {
+	c := &cobra.Command{
+		Use:   "interpreter",
+		Short: "interpreter repl",
+		Run: func(cmd *cobra.Command, args []string) {
 			interpreterRepl.Start()
 		},
 	}
-	c.AddCommand(NewLexerCommand(), NewParserCommand())
 	return c
 }
 

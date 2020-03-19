@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/wreulicke/monkey/token"
@@ -179,7 +180,7 @@ fn({x}) { x };
 		//
 		{token.EOF, ""},
 	}
-	l := New(input)
+	l := New(bytes.NewBufferString(input))
 
 	for i, tt := range tests {
 		tok := l.NextToken()

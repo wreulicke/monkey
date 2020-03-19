@@ -1,6 +1,7 @@
 package interpreter
 
 import (
+	"bytes"
 	"fmt"
 	"testing"
 
@@ -541,7 +542,7 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 }
 
 func testEval(input string) object.Object {
-	l := lexer.New(input)
+	l := lexer.New(bytes.NewBufferString(input))
 	p := parser.New(l)
 	program := p.Parse()
 	env := object.NewEnvironment()

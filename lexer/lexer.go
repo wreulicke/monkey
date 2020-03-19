@@ -26,8 +26,8 @@ type Lexer struct {
 	error    error
 }
 
-func New(input string) *Lexer {
-	l := &Lexer{input: bufio.NewReader(bytes.NewBufferString(input))}
+func New(input io.Reader) *Lexer {
+	l := &Lexer{input: bufio.NewReader(input)}
 	l.position = &Position{line: 1}
 	return l
 }
