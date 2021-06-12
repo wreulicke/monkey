@@ -1,6 +1,7 @@
 package repl
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 
@@ -15,7 +16,7 @@ func Start() {
 		case "exit":
 			os.Exit(0)
 		default:
-			l := lexer.New(str)
+			l := lexer.New(bytes.NewBufferString(str))
 			for tok := l.NextToken(); tok.Type != token.EOF; tok = l.NextToken() {
 				fmt.Printf("%+v\n", tok)
 			}
