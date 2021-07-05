@@ -1,11 +1,14 @@
 package cli
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 
 	interpreterRepl "github.com/wreulicke/monkey/interpreter/repl"
 	lexerRepl "github.com/wreulicke/monkey/lexer/repl"
 	parserRepl "github.com/wreulicke/monkey/parser/repl"
+	vmRepl "github.com/wreulicke/monkey/vm/repl"
 )
 
 func New() *cobra.Command {
@@ -15,7 +18,7 @@ func New() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 		},
 	}
-	c.AddCommand(NewInterpreterCommand(), NewLexerCommand(), NewParserCommand())
+	c.AddCommand(NewInterpreterCommand(), NewLexerCommand(), NewParserCommand(), NewVMCommand())
 	return c
 }
 
@@ -41,12 +44,23 @@ func NewLexerCommand() *cobra.Command {
 	return c
 }
 
-func NewParserCommand() *cobra.Command {
+func NewVMCommand() *cobra.Command {
 	c := &cobra.Command{
 		Use:   "parser",
 		Short: "parser repl",
 		Run: func(cmd *cobra.Command, args []string) {
 			parserRepl.Start()
+		},
+	}
+	return c
+}
+
+func NewParserCommand() *cobra.Command {
+	c := &cobra.Command{
+		Use:   "vm",
+		Short: "vm repl",
+		Run: func(cmd *cobra.Command, args []string) {
+			vmRepl.Start(os.Stdin, os.Stdout)
 		},
 	}
 	return c

@@ -95,14 +95,14 @@ func TestParsingFunctionLiteralWithArrayPattern(t *testing.T) {
 						Literal: "{",
 					},
 					Pattern: []*ast.Identifier{
-						&ast.Identifier{
+						{
 							Token: token.Token{
 								Type:    token.IDENT,
 								Literal: "x",
 							},
 							Value: "x",
 						},
-						&ast.Identifier{
+						{
 							Token: token.Token{
 								Type:    token.IDENT,
 								Literal: "y",
