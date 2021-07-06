@@ -49,12 +49,12 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		stackTop := machine.StackTop()
-		if stackTop == nil {
+		lastPopped := machine.LastPoppedStackElem()
+		if lastPopped == nil {
 			fmt.Fprintln(out, "nil")
 			continue
 		}
-		io.WriteString(out, stackTop.Inspect())
+		io.WriteString(out, lastPopped.Inspect())
 		io.WriteString(out, "\n")
 	}
 }
