@@ -19,6 +19,10 @@ const (
 	OpMul
 	OpDiv
 	OpPop
+
+	OpEqual
+	OpNotEqual
+	OpGreaterThan
 )
 
 type Definition struct {
@@ -35,6 +39,10 @@ var definitions = map[Opcode]*Definition{
 	OpMul:      {"OpMul", []int{}},
 	OpDiv:      {"OpDiv", []int{}},
 	OpPop:      {"OpPop", []int{}},
+
+	OpEqual:       {"OpEqual", []int{}},
+	OpNotEqual:    {"OpNotEqual", []int{}},
+	OpGreaterThan: {"OpGreaterThan", []int{}},
 }
 
 func Lookup(op byte) (*Definition, error) {
