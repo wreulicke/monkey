@@ -57,6 +57,12 @@ func (c *Compiler) Compile(node ast.Node) error {
 		default:
 			return fmt.Errorf("unknown operator %s", node.Operator)
 		}
+	case *ast.BooleanLiteral:
+		if node.Value {
+			c.emit(code.OpTrue)
+		} else {
+			c.emit(code.OpFalse)
+		}
 	case *ast.NumberLiteral:
 		i, err := strconv.ParseInt(node.Value, 10, 64)
 		if err != nil {
