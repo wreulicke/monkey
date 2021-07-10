@@ -197,6 +197,11 @@ func testExpectedObject(
 				t.Errorf("testIntegerObject failed: %s", err)
 			}
 		}
+	case string:
+		err := testStringObject(expected, actual)
+		if err != nil {
+			t.Errorf("testStringObject failed: %s", err)
+		}
 	case bool:
 		err := testBooleanObject(bool(expected), actual)
 		if err != nil {
