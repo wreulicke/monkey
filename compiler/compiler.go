@@ -107,22 +107,20 @@ func (c *Compiler) Compile(node ast.Node) error {
 			c.removeLastPop()
 		}
 
-		if node.Alternative == nil {
-			afterConsequencePos := len(c.instructions)
-			c.changeOperand(jumpNotTruthyPos, afterConsequencePos)
-			return nil
-		}
-
 		// Emit an `OpJump` with a bogus value
 		jumpPos := c.emit(code.OpJump, 9999)
-
 		afterConsequencePos := len(c.instructions)
 		c.changeOperand(jumpNotTruthyPos, afterConsequencePos)
 
-		err = c.Compile(node.Alternative)
-		if err != nil {
-			return err
+		if node.Alternative == nil {
+			c.emit(code.OpNull)
+		} else {
+			err = c.Compile(node.Alternative)
+			if err != nil {
+				return err
+			}
 		}
+
 		if c.lastInstructionIsPop() {
 			c.removeLastPop()
 		}
