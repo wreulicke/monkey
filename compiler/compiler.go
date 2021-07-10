@@ -181,6 +181,8 @@ func (c *Compiler) Compile(node ast.Node) error {
 		}
 		integer := &object.Integer{Value: i}
 		c.emit(code.OpConstant, c.addConstant(integer))
+	case *ast.StringLiteral:
+		c.emit(code.OpConstant, c.addConstant(&object.String{Value: node.Value}))
 	}
 
 	return nil
