@@ -1,14 +1,14 @@
 package object
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+	"hash/fnv"
+	"strings"
 
-import "github.com/wreulicke/monkey/ast"
-
-import "bytes"
-
-import "strings"
-
-import "hash/fnv"
+	"github.com/wreulicke/monkey/ast"
+	"github.com/wreulicke/monkey/code"
+)
 
 var typeNames = []string{
 	"INTEGER",
@@ -36,6 +36,7 @@ const (
 	RETURN
 	ERROR
 	BUILTIN
+	COMPILED_FUNCTION
 )
 
 func (o ObjectType) String() string {
@@ -185,6 +186,15 @@ func (f *Function) Inspect() string {
 	out.WriteString(f.Body.String())
 	out.WriteString("\n}")
 	return out.String()
+}
+
+type CompiledFunction struct {
+	Instructions code.Instructions
+}
+
+func (cf *CompiledFunction) Type() ObjectType { return COMPILED_FUNCTION }
+func (cf *CompiledFunction) Inspect() string {
+	return fmt.Sprintf("CompiledFunction[%p]", cf)
 }
 
 type BuiltinFunction func(args ...Object) Object
