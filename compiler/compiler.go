@@ -71,7 +71,11 @@ func (c *Compiler) Compile(node ast.Node) error {
 		switch p := node.Pattern.(type) {
 		case *ast.Identifier:
 			symbol := c.symbolTable.Define(p.Value)
-			c.emit(code.OpSetGlobal, symbol.Index)
+			if symbol.Scope == GlobalScope {
+				c.emit(code.OpSetGlobal, symbol.Index)
+			} else {
+				c.emit(code.OpSetLocal, symbol.Index)
+			}
 		default:
 			panic("unsupported pattern")
 		}
@@ -198,7 +202,11 @@ func (c *Compiler) Compile(node ast.Node) error {
 		if !ok {
 			return fmt.Errorf("undefined variable %s", node.Value)
 		}
-		c.emit(code.OpGetGlobal, symbol.Index)
+		if symbol.Scope == GlobalScope {
+			c.emit(code.OpGetGlobal, symbol.Index)
+		} else {
+			c.emit(code.OpGetLocal, symbol.Index)
+		}
 	case *ast.BooleanLiteral:
 		if node.Value {
 			c.emit(code.OpTrue)
@@ -342,12 +350,15 @@ func (c *Compiler) enterScope() {
 	}
 	c.scopes = append(c.scopes, scope)
 	c.scopeIndex++
+
+	c.symbolTable = NewEnclosedSymbolTable(c.symbolTable)
 }
 
 func (c *Compiler) leaveScope() code.Instructions {
 	instructions := c.currentInstructions()
 	c.scopes = c.scopes[:len(c.scopes)-1]
 	c.scopeIndex--
+	c.symbolTable = c.symbolTable.Outer
 	return instructions
 }
 
