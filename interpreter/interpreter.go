@@ -160,7 +160,10 @@ func callFunction(fn object.Object, args []object.Object) object.Object {
 		functionEnv := extendFunctionEnv(fn, args)
 		return unwrapReturnValue(Eval(fn.Body, functionEnv))
 	case *object.Builtin:
-		return fn.Fn(args...)
+		if result := fn.Fn(args...); result != nil {
+			return result
+		}
+		return NULL
 	}
 	return newError("not a function: %s", fn.Type())
 }
