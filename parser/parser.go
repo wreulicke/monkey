@@ -170,6 +170,11 @@ func (p *Parser) parseLetStatement() ast.Statement {
 	p.nextToken()
 	stmt.Value = p.parseExpression(LOWEST)
 
+	if fl, ok := stmt.Value.(*ast.FunctionLiteral); ok {
+		// TODO support pattern match
+		fl.Name = stmt.Pattern.(*ast.Identifier).Value
+	}
+
 	if p.peekTokenIs(token.SEMICOLON) {
 		p.nextToken()
 	}

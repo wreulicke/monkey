@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 
 	"github.com/wreulicke/monkey/token"
@@ -356,6 +357,7 @@ type FunctionLiteral struct {
 	Token      token.Token
 	Parameters []Pattern
 	Body       *BlockStatement
+	Name       string
 }
 
 func (fl *FunctionLiteral) TokenLiteral() string {
@@ -370,6 +372,9 @@ func (fl *FunctionLiteral) String() string {
 		params = append(params, p.String())
 	}
 	out.WriteString(fl.TokenLiteral())
+	if fl.Name != "" {
+		out.WriteString(fmt.Sprintf("<%s>", fl.Name))
+	}
 	out.WriteRune('(')
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(") ")
