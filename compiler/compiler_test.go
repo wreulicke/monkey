@@ -18,6 +18,78 @@ type compilerTestCase struct {
 	expectedInstructions []code.Instructions
 }
 
+func TestPipelineOperator(t *testing.T) {
+	tests := []compilerTestCase{
+		{
+			input: `
+				[2, 3] | fn(x) { x[0] + x[1] };
+			`,
+			expectedConstants: []interface{}{
+				0,
+				1,
+				[]code.Instructions{
+					code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpConstant, 0),
+					code.Make(code.OpIndex),
+
+					code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpConstant, 1),
+					code.Make(code.OpIndex),
+
+					code.Make(code.OpAdd),
+					code.Make(code.OpReturnValue),
+				},
+				2,
+				3,
+			},
+			expectedInstructions: []code.Instructions{
+				code.Make(code.OpClosure, 2, 0),
+				code.Make(code.OpConstant, 3),
+				code.Make(code.OpConstant, 4),
+				code.Make(code.OpArray, 2),
+				code.Make(code.OpCall, 1),
+				code.Make(code.OpPop),
+			},
+		},
+		{
+			input: `
+				[2, 3] | fn([x, y]) { x + y };
+			`,
+			expectedConstants: []interface{}{
+				0,
+				1,
+				[]code.Instructions{
+					code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpConstant, 0),
+					code.Make(code.OpIndex),
+					code.Make(code.OpSetLocal, 1),
+
+					code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpConstant, 1),
+					code.Make(code.OpIndex),
+					code.Make(code.OpSetLocal, 2),
+
+					code.Make(code.OpGetLocal, 1),
+					code.Make(code.OpGetLocal, 2),
+					code.Make(code.OpAdd),
+					code.Make(code.OpReturnValue),
+				},
+				2,
+				3,
+			},
+			expectedInstructions: []code.Instructions{
+				code.Make(code.OpClosure, 2, 0),
+				code.Make(code.OpConstant, 3),
+				code.Make(code.OpConstant, 4),
+				code.Make(code.OpArray, 2),
+				code.Make(code.OpCall, 1),
+				code.Make(code.OpPop),
+			},
+		},
+	}
+	runCompilerTests(t, tests)
+}
+
 func TestLetStatementWithArrayPattern(t *testing.T) {
 	tests := []compilerTestCase{
 		{
