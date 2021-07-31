@@ -83,6 +83,48 @@ func (c *Compiler) Compile(node ast.Node) error {
 			} else {
 				c.emit(code.OpSetLocal, symbol.Index)
 			}
+		case *ast.ArrayPattern:
+			err := c.Compile(node.Value)
+			if err != nil {
+				return err
+			}
+
+			for i, v := range p.Pattern {
+				// TODO support nested pattern match
+				name := v.(*ast.Identifier).Value
+				symbol := c.symbolTable.Define(name)
+
+				constIndex := c.addConstant(&object.Integer{Value: int64(i)})
+				c.emit(code.OpConstant, constIndex)
+				c.emit(code.OpIndex)
+
+				if symbol.Scope == GlobalScope {
+					c.emit(code.OpSetGlobal, symbol.Index)
+				} else {
+					c.emit(code.OpSetLocal, symbol.Index)
+				}
+			}
+		case *ast.HashPattern:
+			err := c.Compile(node.Value)
+			if err != nil {
+				return err
+			}
+
+			for _, e := range p.Pattern {
+				name := e.Value
+				symbol := c.symbolTable.Define(name)
+
+				constIndex := c.addConstant(&object.String{Value: name})
+				c.emit(code.OpConstant, constIndex)
+				c.emit(code.OpIndex)
+
+				if symbol.Scope == GlobalScope {
+					c.emit(code.OpSetGlobal, symbol.Index)
+				} else {
+					c.emit(code.OpSetLocal, symbol.Index)
+				}
+			}
+
 		default:
 			panic("unsupported pattern")
 		}

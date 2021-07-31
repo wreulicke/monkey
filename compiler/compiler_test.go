@@ -18,6 +18,67 @@ type compilerTestCase struct {
 	expectedInstructions []code.Instructions
 }
 
+func TestLetStatementWithArrayPattern(t *testing.T) {
+	tests := []compilerTestCase{
+		{
+			input: `
+				let [a, b] = [2, 3];
+			`,
+			expectedConstants: []interface{}{
+				2,
+				3,
+				0,
+				1,
+			},
+			expectedInstructions: []code.Instructions{
+				code.Make(code.OpConstant, 0),
+				code.Make(code.OpConstant, 1),
+				code.Make(code.OpArray, 2),
+				code.Make(code.OpConstant, 2),
+				code.Make(code.OpIndex),
+				code.Make(code.OpSetGlobal, 0),
+				code.Make(code.OpConstant, 3),
+				code.Make(code.OpIndex),
+				code.Make(code.OpSetGlobal, 1),
+			},
+		},
+	}
+	runCompilerTests(t, tests)
+}
+
+func TestLetStatementWithHashPattern(t *testing.T) {
+	tests := []compilerTestCase{
+		{
+			input: `
+				let {x, y} = {"x": 1, "y": 2};
+			`,
+			expectedConstants: []interface{}{
+				"x",
+				1,
+				"y",
+				2,
+				"x",
+				"y",
+			},
+			expectedInstructions: []code.Instructions{
+				code.Make(code.OpConstant, 0),
+				code.Make(code.OpConstant, 1),
+				code.Make(code.OpConstant, 2),
+				code.Make(code.OpConstant, 3),
+				code.Make(code.OpHash, 4),
+
+				code.Make(code.OpConstant, 4),
+				code.Make(code.OpIndex),
+				code.Make(code.OpSetGlobal, 0),
+				code.Make(code.OpConstant, 5),
+				code.Make(code.OpIndex),
+				code.Make(code.OpSetGlobal, 1),
+			},
+		},
+	}
+	runCompilerTests(t, tests)
+}
+
 func TestRecursiveFunctions(t *testing.T) {
 	tests := []compilerTestCase{
 		{
