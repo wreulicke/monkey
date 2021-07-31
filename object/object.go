@@ -37,6 +37,7 @@ const (
 	ERROR
 	BUILTIN
 	COMPILED_FUNCTION
+	CLOSURE
 )
 
 func (o ObjectType) String() string {
@@ -211,6 +212,16 @@ func (f *Builtin) Type() ObjectType {
 
 func (f *Builtin) Inspect() string {
 	return "builtin function"
+}
+
+type Closure struct {
+	Fn   *CompiledFunction
+	Free []Object
+}
+
+func (c *Closure) Type() ObjectType { return CLOSURE }
+func (c *Closure) Inspect() string {
+	return fmt.Sprintf("Closure[%p]", c)
 }
 
 type HashKey struct {
