@@ -89,10 +89,19 @@ func (c *Compiler) Compile(node ast.Node) error {
 				return err
 			}
 
+			tempSymbol := c.symbolTable.Define("$") // FIXME better way?
+			if tempSymbol.Scope == GlobalScope {
+				c.emit(code.OpSetGlobal, tempSymbol.Index)
+			} else {
+				c.emit(code.OpSetLocal, tempSymbol.Index)
+			}
+
 			for i, v := range p.Pattern {
 				// TODO support nested pattern match
 				name := v.(*ast.Identifier).Value
 				symbol := c.symbolTable.Define(name)
+
+				c.loadSymbol(tempSymbol) // FIXME better way?
 
 				constIndex := c.addConstant(&object.Integer{Value: int64(i)})
 				c.emit(code.OpConstant, constIndex)
@@ -110,9 +119,18 @@ func (c *Compiler) Compile(node ast.Node) error {
 				return err
 			}
 
+			tempSymbol := c.symbolTable.Define("$") // FIXME better way?
+			if tempSymbol.Scope == GlobalScope {
+				c.emit(code.OpSetGlobal, tempSymbol.Index)
+			} else {
+				c.emit(code.OpSetLocal, tempSymbol.Index)
+			}
+
 			for _, e := range p.Pattern {
 				name := e.Value
 				symbol := c.symbolTable.Define(name)
+
+				c.loadSymbol(tempSymbol) // FIXME better way?
 
 				constIndex := c.addConstant(&object.String{Value: name})
 				c.emit(code.OpConstant, constIndex)
@@ -288,10 +306,40 @@ func (c *Compiler) Compile(node ast.Node) error {
 			c.symbolTable.DefineFunctionName(node.Name)
 		}
 
-		// TODO support pattern match
 		for _, p := range node.Parameters {
-			v := p.(*ast.Identifier)
-			c.symbolTable.Define(v.Value)
+			switch v := p.(type) {
+			case *ast.Identifier:
+				c.symbolTable.Define(v.Value)
+			default:
+				c.symbolTable.numDefinitions++
+			}
+		}
+
+		for i, p := range node.Parameters {
+			switch v := p.(type) {
+			case *ast.ArrayPattern:
+				for index, pattern := range v.Pattern {
+					// TODO support nested pattern match
+					ident := pattern.(*ast.Identifier)
+					symbol := c.symbolTable.Define(ident.Value)
+
+					c.emit(code.OpGetLocal, i)
+					constIndex := c.addConstant(&object.Integer{Value: int64(index)})
+					c.emit(code.OpConstant, constIndex)
+					c.emit(code.OpIndex)
+					c.emit(code.OpSetLocal, symbol.Index)
+				}
+			case *ast.HashPattern:
+				for _, ident := range v.Pattern {
+					symbol := c.symbolTable.Define(ident.Value)
+
+					c.emit(code.OpGetLocal, i)
+					constIndex := c.addConstant(&object.String{Value: ident.Value})
+					c.emit(code.OpConstant, constIndex)
+					c.emit(code.OpIndex)
+					c.emit(code.OpSetLocal, symbol.Index)
+				}
+			}
 		}
 
 		err := c.Compile(node.Body)

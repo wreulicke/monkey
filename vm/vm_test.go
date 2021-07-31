@@ -12,6 +12,50 @@ import (
 	"github.com/wreulicke/monkey/parser"
 )
 
+func TestSimplePatternMatch(t *testing.T) {
+	tests := []vmTestCase{
+		{
+			input: `
+				let [x, y] = [2, 3]
+				x + y
+			`,
+			expected: 5,
+		},
+		{
+			input: `
+				let {x, y} = {"x": 2, "y": 3}
+				x + y
+			`,
+			expected: 5,
+		},
+	}
+	runVmTests(t, tests)
+}
+
+func TestPatternMatchWithFunction(t *testing.T) {
+	tests := []vmTestCase{
+		{
+			input: `
+				let v = fn([x, y], z) {
+					x + y + z
+				}
+				v([2, 3], 4)
+			`,
+			expected: 9,
+		},
+		{
+			input: `
+				let v = fn({x, y}, z) {
+					x + y + z
+				}
+				v({"x": 2, "y": 3}, 4)
+			`,
+			expected: 9,
+		},
+	}
+	runVmTests(t, tests)
+}
+
 func TestRecursiveFunctions(t *testing.T) {
 	tests := []vmTestCase{
 		{

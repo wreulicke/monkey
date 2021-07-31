@@ -34,12 +34,18 @@ func TestLetStatementWithArrayPattern(t *testing.T) {
 				code.Make(code.OpConstant, 0),
 				code.Make(code.OpConstant, 1),
 				code.Make(code.OpArray, 2),
+
+				code.Make(code.OpSetGlobal, 0),
+				code.Make(code.OpGetGlobal, 0),
+
 				code.Make(code.OpConstant, 2),
 				code.Make(code.OpIndex),
-				code.Make(code.OpSetGlobal, 0),
+				code.Make(code.OpSetGlobal, 1),
+
+				code.Make(code.OpGetGlobal, 0),
 				code.Make(code.OpConstant, 3),
 				code.Make(code.OpIndex),
-				code.Make(code.OpSetGlobal, 1),
+				code.Make(code.OpSetGlobal, 2),
 			},
 		},
 	}
@@ -67,12 +73,149 @@ func TestLetStatementWithHashPattern(t *testing.T) {
 				code.Make(code.OpConstant, 3),
 				code.Make(code.OpHash, 4),
 
+				code.Make(code.OpSetGlobal, 0),
+
+				code.Make(code.OpGetGlobal, 0),
 				code.Make(code.OpConstant, 4),
 				code.Make(code.OpIndex),
-				code.Make(code.OpSetGlobal, 0),
+				code.Make(code.OpSetGlobal, 1),
+
+				code.Make(code.OpGetGlobal, 0),
 				code.Make(code.OpConstant, 5),
 				code.Make(code.OpIndex),
-				code.Make(code.OpSetGlobal, 1),
+				code.Make(code.OpSetGlobal, 2),
+			},
+		},
+	}
+	runCompilerTests(t, tests)
+}
+
+func TestFunctionWithArrayPattern(t *testing.T) {
+	tests := []compilerTestCase{
+		{
+			input: `
+				fn([x, y]) { x + y };
+			`,
+			expectedConstants: []interface{}{
+				0,
+				1,
+				[]code.Instructions{
+					code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpConstant, 0),
+					code.Make(code.OpIndex),
+					code.Make(code.OpSetLocal, 1),
+
+					code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpConstant, 1),
+					code.Make(code.OpIndex),
+					code.Make(code.OpSetLocal, 2),
+
+					code.Make(code.OpGetLocal, 1),
+					code.Make(code.OpGetLocal, 2),
+					code.Make(code.OpAdd),
+					code.Make(code.OpReturnValue),
+				},
+			},
+			expectedInstructions: []code.Instructions{
+				code.Make(code.OpClosure, 2, 0),
+				code.Make(code.OpPop),
+			},
+		},
+		{
+			input: `
+				fn([x, y], z) { x + y + z };
+			`,
+			expectedConstants: []interface{}{
+				0,
+				1,
+				[]code.Instructions{
+					code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpConstant, 0),
+					code.Make(code.OpIndex),
+					code.Make(code.OpSetLocal, 2),
+
+					code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpConstant, 1),
+					code.Make(code.OpIndex),
+					code.Make(code.OpSetLocal, 3),
+
+					code.Make(code.OpGetLocal, 2),
+					code.Make(code.OpGetLocal, 3),
+					code.Make(code.OpAdd),
+					code.Make(code.OpGetLocal, 1),
+					code.Make(code.OpAdd),
+					code.Make(code.OpReturnValue),
+				},
+			},
+			expectedInstructions: []code.Instructions{
+				code.Make(code.OpClosure, 2, 0),
+				code.Make(code.OpPop),
+			},
+		},
+	}
+	runCompilerTests(t, tests)
+}
+
+func TestFunctionWithHashPattern(t *testing.T) {
+	tests := []compilerTestCase{
+		{
+			input: `
+				fn({x, y}) { x + y };
+			`,
+			expectedConstants: []interface{}{
+				"x",
+				"y",
+				[]code.Instructions{
+					code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpConstant, 0),
+					code.Make(code.OpIndex),
+					code.Make(code.OpSetLocal, 1),
+
+					code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpConstant, 1),
+					code.Make(code.OpIndex),
+					code.Make(code.OpSetLocal, 2),
+
+					code.Make(code.OpGetLocal, 1),
+					code.Make(code.OpGetLocal, 2),
+					code.Make(code.OpAdd),
+					code.Make(code.OpReturnValue),
+				},
+			},
+			expectedInstructions: []code.Instructions{
+				code.Make(code.OpClosure, 2, 0),
+				code.Make(code.OpPop),
+			},
+		},
+		{
+			input: `
+				fn({x, y}, z) { x + y + z };
+			`,
+			expectedConstants: []interface{}{
+				"x",
+				"y",
+				[]code.Instructions{
+					code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpConstant, 0),
+					code.Make(code.OpIndex),
+					code.Make(code.OpSetLocal, 2),
+
+					code.Make(code.OpGetLocal, 0),
+					code.Make(code.OpConstant, 1),
+					code.Make(code.OpIndex),
+					code.Make(code.OpSetLocal, 3),
+
+					code.Make(code.OpGetLocal, 2),
+					code.Make(code.OpGetLocal, 3),
+					code.Make(code.OpAdd),
+					code.Make(code.OpGetLocal, 1),
+					code.Make(code.OpAdd),
+					code.Make(code.OpReturnValue),
+				},
+			},
+			expectedInstructions: []code.Instructions{
+				code.Make(code.OpClosure, 2, 0),
+				code.Make(code.OpPop),
 			},
 		},
 	}
